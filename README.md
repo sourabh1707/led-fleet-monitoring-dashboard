@@ -4,6 +4,12 @@
 
 A remote LED display monitoring project that separates the onsite LED-controller environment from the monitoring interface. Display/player information is obtained through NovaCloud/VNNox, processed as JSON, transferred through an MQTT data layer, and consumed by a web-based monitoring dashboard.
 
+## Dashboard Preview
+
+![LED Fleet Monitoring Dashboard](dashboard-preview.png.PNG)
+
+The dashboard provides an operations-oriented interface for monitoring LED display players, including fleet statistics, online/offline status, controller models, resolutions, analytics, filtering, sorting and data export.
+
 ## Project Overview
 
 The project is designed around a distributed monitoring architecture:
@@ -73,11 +79,7 @@ NovaCloud / VNNox
  HTML Dashboard
 ```
 
-## Dashboard
-
-The embedded dashboard provides an operations-oriented view of the LED/player fleet.
-
-### Main capabilities
+## Dashboard Capabilities
 
 - Total display/player count
 - Online and offline counts and percentages
@@ -153,10 +155,10 @@ This makes the dashboard reusable as a remote monitoring interface rather than t
 led-fleet-monitoring-dashboard/
 │
 ├── README.md
+├── dashboard-preview.png.PNG
 ├── docs/
 │   └── architecture.md
-└── node-red/
-    └── VMSHIRE-Dashboard.json
+└── VMSHIRE-Dashboard.json
 ```
 
 ## Running the Project
