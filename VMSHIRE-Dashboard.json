@@ -1,0 +1,758 @@
+[
+    {
+        "id": "b995c9cbd3aa994d",
+        "type": "tab",
+        "label": "VMSHIRE-Dashboard",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b1a1f1e2d3a4",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "Test NovaCloud API",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 40,
+        "wires": [
+            [
+                "auth_node"
+            ]
+        ]
+    },
+    {
+        "id": "auth_node",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Generate NovaCloud Auth",
+        "func": "// ====== SET YOUR KEYS HERE ======\nconst APP_KEY = \"daff5f02ba594f64a7f052039ffac46f\";\nconst APP_SECRET = \"ae296fb667b94a0d8603cca9177a1d5d\";\n// ===============================\n\n// Get crypto from global context\nconst crypto = global.get('crypto');\n\n// Generate random Nonce\nfunction makeNonce(len = 12) {\n    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";\n    let result = \"\";\n    for (let i = 0; i < len; i++) {\n        result += chars.charAt(Math.floor(Math.random() * chars.length));\n    }\n    return result;\n}\n\nconst nonce = makeNonce();\nconst curTime = Math.floor(Date.now() / 1000).toString();\n\n// Create SHA256 CheckSum\nconst checkSum = crypto\n    .createHash('sha256')\n    .update(APP_SECRET + nonce + curTime)\n    .digest('hex');\n\nmsg.headers = {\n    \"AppKey\": APP_KEY,\n    \"Nonce\": nonce,\n    \"CurTime\": curTime,\n    \"CheckSum\": checkSum,\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 40,
+        "wires": [
+            [
+                "http_node"
+            ]
+        ]
+    },
+    {
+        "id": "http_node",
+        "type": "http request",
+        "z": "b995c9cbd3aa994d",
+        "name": "GET Player List",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://open-au.vnnox.com/v2/player/list?count=10",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 730,
+        "y": 40,
+        "wires": [
+            [
+                "debug_node"
+            ]
+        ]
+    },
+    {
+        "id": "debug_node",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "NovaCloud Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 980,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "eb879a85ed161ac9",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "Test NovaCloud API",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "2e0eb2b130479e53"
+            ]
+        ]
+    },
+    {
+        "id": "2e0eb2b130479e53",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Generate NovaCloud Auth",
+        "func": "// ====== SET YOUR KEYS HERE ======\n//const APP_KEY = \"e2e5ce245af84eebadc7be0c5429d6e6\";\n//const APP_SECRET = \"6114f594d32547bca5b1db041311b53f\";\n// ===============================\nvar APP_KEY = global.get(\"APP_KEY\");\nvar APP_SECRET = global.get(\"APP_SECRET\");\n//var DEVICE_SN = global.get(\"DEVICE_SN\");\n\n\n\n// Get crypto from global context\n//const crypto = global.get('crypto');\n\n// Generate random Nonce\nfunction makeNonce(len = 12) {\n    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";\n    let result = \"\";\n    for (let i = 0; i < len; i++) {\n        result += chars.charAt(Math.floor(Math.random() * chars.length));\n    }\n    return result;\n}\n\nconst nonce = makeNonce();\nconst curTime = Math.floor(Date.now() / 1000).toString();\n\n// Create SHA256 CheckSum\nconst checkSum = crypto\n    .createHash('sha256')\n    .update(APP_SECRET + nonce + curTime)\n    .digest('hex');\n\nmsg.headers = {\n    \"AppKey\": APP_KEY,\n    \"Nonce\": nonce,\n    \"CurTime\": curTime,\n    \"CheckSum\": checkSum,\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 480,
+        "y": 300,
+        "wires": [
+            [
+                "5c0437ced32e4f0e"
+            ]
+        ]
+    },
+    {
+        "id": "5c0437ced32e4f0e",
+        "type": "http request",
+        "z": "b995c9cbd3aa994d",
+        "name": "GET Player List",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://open-in.vnnox.com/v2/player/list?count=100",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 730,
+        "y": 300,
+        "wires": [
+            [
+                "7215f84b5dc86b17"
+            ]
+        ]
+    },
+    {
+        "id": "7215f84b5dc86b17",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "NovaCloud Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1020,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7513bebc1e9f170f",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 140,
+        "wires": [
+            [
+                "0575f4fb8c8ac06f"
+            ]
+        ]
+    },
+    {
+        "id": "fe2c9ba739361203",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "0575f4fb8c8ac06f",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "function 1",
+        "func": "global.set(\"APP_KEY\", \"e2e5ce245af84eebadc7be0c5429d6e6\");\nglobal.set(\"APP_SECRET\", \"6114f594d32547bca5b1db041311b53f\");\nglobal.set(\"DEVICE_SN\", \"24611A000004931\");\n\nnode.warn(\"Global credentials set\");\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 140,
+        "wires": [
+            [
+                "fe2c9ba739361203"
+            ]
+        ]
+    },
+    {
+        "id": "2b4ae24251cd8236",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "Screen Monitoring Information",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 220,
+        "y": 340,
+        "wires": [
+            [
+                "18d7f0f88905b325"
+            ]
+        ]
+    },
+    {
+        "id": "18d7f0f88905b325",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Generate NovaCloud Auth",
+        "func": "// ====== SET YOUR KEYS HERE ======\n//const APP_KEY = \"e2e5ce245af84eebadc7be0c5429d6e6\";\n//const APP_SECRET = \"6114f594d32547bca5b1db041311b53f\";\n\n// ====== SET DEVICE SN HERE ======\n//const DEVICE_SN = \"2ZTA53C25W2A10027244\";\n// =================================\nvar APP_KEY = global.get(\"APP_KEY\");\nvar APP_SECRET = global.get(\"APP_SECRET\");\nvar DEVICE_SN = global.get(\"DEVICE_SN\");\n//const crypto = global.get('crypto');\n\nfunction makeNonce(len = 12) {\n    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";\n    let result = \"\";\n    for (let i = 0; i < len; i++) {\n        result += chars.charAt(Math.floor(Math.random() * chars.length));\n    }\n    return result;\n}\n\nconst nonce = makeNonce();\nconst curTime = Math.floor(Date.now() / 1000).toString();\n\nconst checkSum = crypto\n    .createHash('sha256')\n    .update(APP_SECRET + nonce + curTime)\n    .digest('hex');\n\nmsg.headers = {\n    \"AppKey\": APP_KEY,\n    \"Nonce\": nonce,\n    \"CurTime\": curTime,\n    \"CheckSum\": checkSum,\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\n\n// Build API URL dynamically with SN\nmsg.url = `https://open-in.vnnox.com/v2/device-status-monitor/screen/monitor/${DEVICE_SN}`;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 520,
+        "y": 340,
+        "wires": [
+            [
+                "9ad50f6769c4675d"
+            ]
+        ]
+    },
+    {
+        "id": "9ad50f6769c4675d",
+        "type": "http request",
+        "z": "b995c9cbd3aa994d",
+        "name": "GET Topology",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 780,
+        "y": 340,
+        "wires": [
+            [
+                "4c256747da2587a2"
+            ]
+        ]
+    },
+    {
+        "id": "4c256747da2587a2",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "Topology Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1030,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "295192c69f8be404",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 80,
+        "wires": [
+            [
+                "1ddb0801845e4ea0"
+            ]
+        ]
+    },
+    {
+        "id": "eb480445b0c2331c",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1ddb0801845e4ea0",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "saurabh",
+        "func": "global.set(\"APP_KEY\", \"c36d9b4147ab47f08f41572aeb0e25ba\");\nglobal.set(\"APP_SECRET\", \"a5881543a0bb41c0a97ae6c246bda107\");\nglobal.set(\"DEVICE_SN\", \"S4Y0G6XB\");\n\nnode.warn(\"Global credentials set\");\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 80,
+        "wires": [
+            [
+                "eb480445b0c2331c"
+            ]
+        ]
+    },
+    {
+        "id": "8ede3c61e081c105",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "bec0ad1d9c4deeec"
+            ]
+        ]
+    },
+    {
+        "id": "c3e6e2d0fc35306d",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "bec0ad1d9c4deeec",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "DOMAC",
+        "func": "global.set(\"APP_KEY\", \"df35b02f4b3a4ae78ec4dd26d5419e4c\");\nglobal.set(\"APP_SECRET\", \"aa2cea827e7d406089482d89d1d66492\");\n//global.set(\"DEVICE_SN\", \"S4Y0G6XB\");\n\nnode.warn(\"Global credentials set\");\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 200,
+        "wires": [
+            [
+                "c3e6e2d0fc35306d"
+            ]
+        ]
+    },
+    {
+        "id": "f923485219af6b16",
+        "type": "inject",
+        "z": "b995c9cbd3aa994d",
+        "name": "Refresh Player List",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 230,
+        "y": 480,
+        "wires": [
+            [
+                "26e58ad927882a55"
+            ]
+        ]
+    },
+    {
+        "id": "26e58ad927882a55",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Generate NovaCloud Auth",
+        "func": "// ====== SET YOUR KEYS HERE ======\n//const APP_KEY = \"e2e5ce245af84eebadc7be0c5429d6e6\";\n//const APP_SECRET = \"6114f594d32547bca5b1db041311b53f\";\n// ===============================\nvar APP_KEY = global.get(\"APP_KEY\");\nvar APP_SECRET = global.get(\"APP_SECRET\");\n//var DEVICE_SN = global.get(\"DEVICE_SN\");\n\n\n\n// Get crypto from global context\n//const crypto = global.get('crypto');\n\n// Generate random Nonce\nfunction makeNonce(len = 12) {\n    const chars = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\";\n    let result = \"\";\n    for (let i = 0; i < len; i++) {\n        result += chars.charAt(Math.floor(Math.random() * chars.length));\n    }\n    return result;\n}\n\nconst nonce = makeNonce();\nconst curTime = Math.floor(Date.now() / 1000).toString();\n\n// Create SHA256 CheckSum\nconst checkSum = crypto\n    .createHash('sha256')\n    .update(APP_SECRET + nonce + curTime)\n    .digest('hex');\n\nmsg.headers = {\n    \"AppKey\": APP_KEY,\n    \"Nonce\": nonce,\n    \"CurTime\": curTime,\n    \"CheckSum\": checkSum,\n    \"Content-Type\": \"application/x-www-form-urlencoded\"\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "crypto",
+                "module": "crypto"
+            }
+        ],
+        "x": 470,
+        "y": 480,
+        "wires": [
+            [
+                "075c8e8a9a33b4b3"
+            ]
+        ]
+    },
+    {
+        "id": "075c8e8a9a33b4b3",
+        "type": "http request",
+        "z": "b995c9cbd3aa994d",
+        "name": "GET Player List DOMAC",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "https://open-eu.vnnox.com/v2/player/list?count=100",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 730,
+        "y": 480,
+        "wires": [
+            [
+                "a6f9413590c2dafd"
+            ]
+        ]
+    },
+    {
+        "id": "5a767434bee06b9b",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "NovaCloud Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 1040,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "a6f9413590c2dafd",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Build Player Payload",
+        "func": "// Ensure rows exists\nconst players = msg.payload.rows || [];\n\n// Build simplified player list\nconst playerList = players.map(player => ({\n    name: player.name,\n    model: player.productName,\n    resolution: `${player.width} x ${player.height}`,\n    onlineStatus: player.onlineStatus === 1 ? \"Online\" : \"Offline\",\n    lastSeen: player.lastOnlineTime\n}));\n\n// Create a complete payload\nmsg.payload = {\n    timestamp: new Date().toISOString(),\n    source: \"NovaCloud\",\n    count: playerList.length,\n    players: playerList\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 540,
+        "y": 760,
+        "wires": [
+            [
+                "5a767434bee06b9b",
+                "8f2d8d3a7b6e1111",
+                "5725ded03e1037f6",
+                "f6207ba95ae832d5"
+            ]
+        ]
+    },
+    {
+        "id": "8f2d8d3a7b6e1111",
+        "type": "change",
+        "z": "b995c9cbd3aa994d",
+        "name": "Cache Player Data",
+        "rules": [
+            {
+                "t": "set",
+                "p": "playerData",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5725ded03e1037f6",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Player Statistics",
+        "func": "const data = msg.payload;\n\nnode.status({\n    fill: \"green\",\n    shape: \"dot\",\n    text: `${data.count} Players | ${new Date().toLocaleTimeString()}`\n});\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 700,
+        "wires": [
+            [
+                "eba177c1b00bb8ee"
+            ]
+        ]
+    },
+    {
+        "id": "22188d6fff2f7fa9",
+        "type": "template",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html lang=\"en\" class=\"dark\">\n<head>\n  <meta charset=\"UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n  <title>NovaCloud LED Player Operations Dashboard</title>\n  \n  <!-- Fonts -->\n  <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n  <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n  <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap\" rel=\"stylesheet\">\n\n  <!-- Tailwind CSS CDN -->\n  <script src=\"https://cdn.tailwindcss.com\"></script>\n  <script>\n    tailwind.config = {\n      darkMode: 'class',\n      theme: {\n        extend: {\n          fontFamily: {\n            sans: ['Inter', 'sans-serif'],\n            mono: ['JetBrains Mono', 'monospace'],\n          },\n          colors: {\n            brand: {\n              50: '#f0f7ff',\n              100: '#e0effe',\n              500: '#3b82f6',\n              600: '#2563eb',\n              700: '#1d4ed8',\n              900: '#1e3a8a',\n            },\n            dark: {\n              bg: '#090d16',\n              card: '#111726',\n              cardHover: '#182032',\n              border: 'rgba(255, 255, 255, 0.08)',\n              borderActive: 'rgba(59, 130, 246, 0.4)',\n              muted: '#64748b',\n              text: '#f1f5f9'\n            },\n            status: {\n              online: '#10b981',\n              onlineBg: 'rgba(16, 185, 129, 0.12)',\n              offline: '#f43f5e',\n              offlineBg: 'rgba(244, 63, 94, 0.12)',\n              warning: '#f59e0b'\n            }\n          }\n        }\n      }\n    }\n  </script>\n\n  <!-- Lucide Icons -->\n  <script src=\"https://unpkg.com/lucide@latest\"></script>\n\n  <!-- Chart.js -->\n  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n\n  <style>\n    /* Custom Scrollbar */\n    ::-webkit-scrollbar {\n      width: 6px;\n      height: 6px;\n    }\n    ::-webkit-scrollbar-track {\n      background: #090d16;\n    }\n    ::-webkit-scrollbar-thumb {\n      background: #1e293b;\n      border-radius: 4px;\n    }\n    ::-webkit-scrollbar-thumb:hover {\n      background: #334155;\n    }\n\n    /* Glows & Animations */\n    .glow-online {\n      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);\n    }\n    .glow-offline {\n      box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);\n    }\n    .glow-brand {\n      box-shadow: 0 0 15px rgba(59, 130, 246, 0.25);\n    }\n\n    /* LED Screen Canvas Styling */\n    .led-matrix {\n      background-color: #050811;\n      background-image: \n        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),\n        linear-gradient(to right, rgba(0, 0, 0, 0.8) 1px, transparent 1px),\n        linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 1px, transparent 1px);\n      background-size: 4px 4px, 4px 4px, 4px 4px;\n    }\n\n    /* Subtle Glassmorphic card border */\n    .glass-card {\n      background: #111726;\n      border: 1px solid rgba(255, 255, 255, 0.07);\n      transition: all 0.2s ease-in-out;\n    }\n    .glass-card:hover {\n      border-color: rgba(255, 255, 255, 0.15);\n    }\n\n    /* Pulse animation */\n    @keyframes pulseGlow {\n      0%, 100% { opacity: 1; transform: scale(1); }\n      50% { opacity: 0.5; transform: scale(0.92); }\n    }\n    .animate-pulse-glow {\n      animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;\n    }\n\n    /* Tooltip styling */\n    [data-tooltip] {\n      position: relative;\n    }\n    [data-tooltip]:hover::after {\n      content: attr(data-tooltip);\n      position: absolute;\n      bottom: 125%;\n      left: 50%;\n      transform: translateX(-50%);\n      background: #1e293b;\n      color: #f8fafc;\n      padding: 4px 8px;\n      font-size: 11px;\n      border-radius: 4px;\n      white-space: nowrap;\n      z-index: 50;\n      border: 1px solid rgba(255,255,255,0.1);\n      pointer-events: none;\n      box-shadow: 0 4px 12px rgba(0,0,0,0.5);\n    }\n  </style>\n</head>\n<body class=\"bg-[#090d16] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-blue-600 selection:text-white\">\n\n  <!-- TOP HEADER / NAVBAR -->\n  <header class=\"sticky top-0 z-30 bg-[#090d16]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3.5\">\n    <div class=\"max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4\">\n      \n      <!-- Brand & Source Status -->\n      <div class=\"flex items-center space-x-3.5\">\n        <div class=\"w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 ring-1 ring-white/20\">\n          <i data-lucide=\"monitor\" class=\"w-5 h-5\"></i>\n        </div>\n        <div>\n          <div class=\"flex items-center space-x-2\">\n            <h1 class=\"text-lg font-bold text-white tracking-tight\">NovaCloud</h1>\n            <span class=\"text-xs px-2 py-0.5 rounded-full font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20\">\n              Operations Hub\n            </span>\n          </div>\n          <p class=\"text-xs text-slate-400 flex items-center gap-1.5 mt-0.5\">\n            <span class=\"inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse-glow\"></span>\n            <span>Source: <strong id=\"header-source\" class=\"text-slate-300 font-mono\">NovaCloud</strong></span>\n            <span class=\"text-slate-600\">•</span>\n            <span id=\"header-timestamp\" class=\"text-slate-400 font-mono\">Connecting...</span>\n            <span class=\"text-slate-600\">•</span>\n            <span id=\"header-schema-badge\" class=\"px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 text-[10px] font-mono\">Live Sync Active</span>\n          </p>\n        </div>\n      </div>\n\n      <!-- Action Buttons & Controls -->\n      <div class=\"flex items-center gap-2.5 flex-wrap\">\n        <!-- Search Quick Trigger -->\n        <div class=\"relative min-w-[200px] md:min-w-[260px]\">\n          <i data-lucide=\"search\" class=\"w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400\"></i>\n          <input \n            type=\"text\" \n            id=\"search-input\" \n            placeholder=\"Search players, models, res...\" \n            class=\"w-full pl-9 pr-8 py-1.5 text-xs bg-slate-900/90 border border-slate-700/80 rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition\"\n          />\n          <button id=\"clear-search-btn\" class=\"hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300\">\n            <i data-lucide=\"x\" class=\"w-3.5 h-3.5\"></i>\n          </button>\n        </div>\n\n        <!-- Sync Button -->\n        <button id=\"btn-sync\" data-tooltip=\"Fetch latest telemetry\" class=\"flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition active:scale-95\">\n          <i data-lucide=\"refresh-cw\" class=\"w-3.5 h-3.5 text-blue-400\" id=\"sync-icon\"></i>\n          <span>Sync</span>\n        </button>\n\n        <!-- Toggle Charts Panel Button -->\n        <button id=\"btn-toggle-analytics\" class=\"flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 rounded-lg border border-blue-500/30 transition\">\n          <i data-lucide=\"bar-chart-3\" class=\"w-3.5 h-3.5\"></i>\n          <span id=\"analytics-btn-text\">Analytics</span>\n        </button>\n\n        <!-- Data Export Dropdown -->\n        <div class=\"relative group\">\n          <button class=\"flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition\">\n            <i data-lucide=\"download\" class=\"w-3.5 h-3.5 text-slate-400\"></i>\n            <span>Export</span>\n            <i data-lucide=\"chevron-down\" class=\"w-3 h-3 text-slate-500\"></i>\n          </button>\n          <div class=\"hidden group-hover:block absolute right-0 top-full mt-1 w-36 bg-slate-900 border border-slate-700 rounded-lg shadow-xl z-50 py-1 text-xs\">\n            <button id=\"btn-export-csv\" class=\"w-full px-3 py-2 text-left hover:bg-slate-800 text-slate-300 flex items-center gap-2\">\n              <i data-lucide=\"file-spreadsheet\" class=\"w-3.5 h-3.5 text-emerald-400\"></i> CSV Spreadsheet\n            </button>\n            <button id=\"btn-export-json\" class=\"w-full px-3 py-2 text-left hover:bg-slate-800 text-slate-300 flex items-center gap-2\">\n              <i data-lucide=\"file-code\" class=\"w-3.5 h-3.5 text-amber-400\"></i> Raw JSON Data\n            </button>\n          </div>\n        </div>\n      </div>\n\n    </div>\n  </header>\n\n  <!-- MAIN CONTAINER -->\n  <main class=\"flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-6\">\n\n    <!-- KPI STATS CARDS GRID -->\n    <section class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4\">\n      \n      <!-- Card 1: Total Players -->\n      <div class=\"glass-card rounded-xl p-4 flex items-center justify-between\">\n        <div class=\"space-y-1\">\n          <p class=\"text-xs font-medium text-slate-400 uppercase tracking-wider\">Total Displays</p>\n          <div class=\"flex items-baseline space-x-2\">\n            <span id=\"kpi-total-count\" class=\"text-2xl font-bold text-white font-mono\">0</span>\n            <span class=\"text-xs text-slate-400\">Units</span>\n          </div>\n          <p id=\"kpi-total-pixels\" class=\"text-[11px] text-slate-500 font-mono\">~0 total pixels</p>\n        </div>\n        <div class=\"w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400\">\n          <i data-lucide=\"tv\" class=\"w-6 h-6\"></i>\n        </div>\n      </div>\n\n      <!-- Card 2: Online Status -->\n      <div class=\"glass-card rounded-xl p-4 flex items-center justify-between border-l-4 border-l-emerald-500\">\n        <div class=\"space-y-1\">\n          <p class=\"text-xs font-medium text-slate-400 uppercase tracking-wider\">Online Players</p>\n          <div class=\"flex items-baseline space-x-2\">\n            <span id=\"kpi-online-count\" class=\"text-2xl font-bold text-emerald-400 font-mono\">0</span>\n            <span id=\"kpi-online-pct\" class=\"text-xs font-medium text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded\">0.0%</span>\n          </div>\n          <p class=\"text-[11px] text-emerald-500/80 flex items-center gap-1\">\n            <span class=\"w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping\"></span>\n            Operational & transmitting\n          </p>\n        </div>\n        <div class=\"w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 glow-online\">\n          <i data-lucide=\"wifi\" class=\"w-6 h-6\"></i>\n        </div>\n      </div>\n\n      <!-- Card 3: Offline Status -->\n      <div class=\"glass-card rounded-xl p-4 flex items-center justify-between border-l-4 border-l-rose-500\">\n        <div class=\"space-y-1\">\n          <p class=\"text-xs font-medium text-slate-400 uppercase tracking-wider\">Offline Players</p>\n          <div class=\"flex items-baseline space-x-2\">\n            <span id=\"kpi-offline-count\" class=\"text-2xl font-bold text-rose-400 font-mono\">0</span>\n            <span id=\"kpi-offline-pct\" class=\"text-xs font-medium text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded\">0.0%</span>\n          </div>\n          <p class=\"text-[11px] text-rose-400/80 flex items-center gap-1\">\n            <i data-lucide=\"alert-triangle\" class=\"w-3 h-3\"></i>\n            Requires network inspection\n          </p>\n        </div>\n        <div class=\"w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 glow-offline\">\n          <i data-lucide=\"wifi-off\" class=\"w-6 h-6\"></i>\n        </div>\n      </div>\n\n      <!-- Card 4: Top Model & Resolution -->\n      <div class=\"glass-card rounded-xl p-4 flex items-center justify-between\">\n        <div class=\"space-y-1\">\n          <p class=\"text-xs font-medium text-slate-400 uppercase tracking-wider\">Dominant Model</p>\n          <div class=\"flex items-baseline space-x-2\">\n            <span id=\"kpi-top-model\" class=\"text-xl font-bold text-white font-mono\">-</span>\n            <span id=\"kpi-top-model-count\" class=\"text-xs text-slate-400 font-mono\">0 units</span>\n          </div>\n          <p id=\"kpi-res-summary\" class=\"text-[11px] text-slate-400\">Most common: -</p>\n        </div>\n        <div class=\"w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400\">\n          <i data-lucide=\"cpu\" class=\"w-6 h-6\"></i>\n        </div>\n      </div>\n\n    </section>\n\n    <!-- ANALYTICS CHARTS SECTION -->\n    <section id=\"analytics-section\" class=\"glass-card rounded-xl p-5 space-y-4\">\n      <div class=\"flex items-center justify-between border-b border-slate-800 pb-3\">\n        <div class=\"flex items-center space-x-2\">\n          <i data-lucide=\"pie-chart\" class=\"w-5 h-5 text-blue-400\"></i>\n          <h2 class=\"text-sm font-bold text-white tracking-wide uppercase\">Fleet Analytics & Hardware Metrics</h2>\n        </div>\n        <span class=\"text-xs text-slate-400 font-mono\">Real-time Telemetry Analytics</span>\n      </div>\n\n      <div class=\"grid grid-cols-1 md:grid-cols-3 gap-6 pt-2\">\n        \n        <!-- Chart 1: Status Distribution -->\n        <div class=\"bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col items-center justify-between min-h-[220px]\">\n          <h3 class=\"text-xs font-semibold text-slate-300 w-full flex items-center justify-between\">\n            <span>Online / Offline Status</span>\n            <i data-lucide=\"activity\" class=\"w-4 h-4 text-emerald-400\"></i>\n          </h3>\n          <div class=\"w-full h-44 flex items-center justify-center relative\">\n            <canvas id=\"chart-status\"></canvas>\n          </div>\n        </div>\n\n        <!-- Chart 2: Controller Models -->\n        <div class=\"bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col justify-between min-h-[220px]\">\n          <h3 class=\"text-xs font-semibold text-slate-300 flex items-center justify-between\">\n            <span>Hardware Model Distribution</span>\n            <i data-lucide=\"cpu\" class=\"w-4 h-4 text-purple-400\"></i>\n          </h3>\n          <div class=\"w-full h-44\">\n            <canvas id=\"chart-models\"></canvas>\n          </div>\n        </div>\n\n        <!-- Chart 3: Screen Resolutions -->\n        <div class=\"bg-slate-900/60 p-4 rounded-xl border border-slate-800 flex flex-col justify-between min-h-[220px]\">\n          <h3 class=\"text-xs font-semibold text-slate-300 flex items-center justify-between\">\n            <span>Display Resolution Profiles</span>\n            <i data-lucide=\"grid\" class=\"w-4 h-4 text-blue-400\"></i>\n          </h3>\n          <div class=\"w-full h-44\">\n            <canvas id=\"chart-resolutions\"></canvas>\n          </div>\n        </div>\n\n      </div>\n    </section>\n\n    <!-- FILTER & TOOLBAR CONTROLS -->\n    <section class=\"glass-card rounded-xl p-4 space-y-4\">\n      <div class=\"flex flex-wrap items-center justify-between gap-4\">\n        \n        <!-- Status Filter Tabs -->\n        <div class=\"flex items-center bg-slate-900/80 p-1 rounded-lg border border-slate-800 text-xs\">\n          <button id=\"filter-status-all\" class=\"filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5\">\n            <span>All Units</span>\n            <span id=\"badge-count-all\" class=\"px-1.5 py-0.2 bg-white/20 rounded-full text-[10px] font-mono\">0</span>\n          </button>\n          <button id=\"filter-status-online\" class=\"filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-slate-400 hover:text-slate-200 flex items-center gap-1.5\">\n            <span class=\"w-1.5 h-1.5 rounded-full bg-emerald-400\"></span>\n            <span>Online</span>\n            <span id=\"badge-count-online\" class=\"px-1.5 py-0.2 bg-slate-800 rounded-full text-[10px] font-mono text-emerald-400\">0</span>\n          </button>\n          <button id=\"filter-status-offline\" class=\"filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-slate-400 hover:text-slate-200 flex items-center gap-1.5\">\n            <span class=\"w-1.5 h-1.5 rounded-full bg-rose-500\"></span>\n            <span>Offline</span>\n            <span id=\"badge-count-offline\" class=\"px-1.5 py-0.2 bg-slate-800 rounded-full text-[10px] font-mono text-rose-400\">0</span>\n          </button>\n        </div>\n\n        <!-- Dropdowns & View Switches -->\n        <div class=\"flex items-center gap-3 flex-wrap\">\n          \n          <!-- Model Filter Select -->\n          <div class=\"flex items-center gap-1.5 text-xs\">\n            <label class=\"text-slate-400 hidden sm:inline\">Model:</label>\n            <select id=\"select-model\" class=\"bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-blue-500\">\n              <option value=\"ALL\">All Models</option>\n            </select>\n          </div>\n\n          <!-- Resolution Filter Select -->\n          <div class=\"flex items-center gap-1.5 text-xs\">\n            <label class=\"text-slate-400 hidden sm:inline\">Resolution:</label>\n            <select id=\"select-resolution\" class=\"bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-blue-500\">\n              <option value=\"ALL\">All Resolutions</option>\n            </select>\n          </div>\n\n          <!-- Sort Select -->\n          <div class=\"flex items-center gap-1.5 text-xs\">\n            <label class=\"text-slate-400 hidden sm:inline\">Sort:</label>\n            <select id=\"select-sort\" class=\"bg-slate-900 border border-slate-700 text-slate-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-blue-500\">\n              <option value=\"status\">Online First</option>\n              <option value=\"name\">Name (A - Z)</option>\n              <option value=\"lastSeen\">Last Seen (Recent)</option>\n              <option value=\"resolution\">Resolution (Pixels)</option>\n            </select>\n          </div>\n\n          <div class=\"h-5 w-px bg-slate-800 hidden sm:block\"></div>\n\n          <!-- View Layout Mode Switcher -->\n          <div class=\"flex items-center gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-800\">\n            <button id=\"view-mode-grid\" data-tooltip=\"Cards Grid View\" class=\"p-1.5 rounded text-blue-400 bg-slate-800 transition\">\n              <i data-lucide=\"grid\" class=\"w-3.5 h-3.5\"></i>\n            </button>\n            <button id=\"view-mode-table\" data-tooltip=\"Data Table View\" class=\"p-1.5 rounded text-slate-400 hover:text-white transition\">\n              <i data-lucide=\"list\" class=\"w-3.5 h-3.5\"></i>\n            </button>\n            <button id=\"view-mode-matrix\" data-tooltip=\"Compact Topology Matrix\" class=\"p-1.5 rounded text-slate-400 hover:text-white transition\">\n              <i data-lucide=\"layout-template\" class=\"w-3.5 h-3.5\"></i>\n            </button>\n          </div>\n\n        </div>\n\n      </div>\n\n      <!-- Active Filters Pill Bar -->\n      <div id=\"active-filters-bar\" class=\"hidden flex items-center gap-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400\">\n        <span>Active Filters:</span>\n        <div id=\"active-filters-pills\" class=\"flex items-center gap-1.5 flex-wrap\"></div>\n        <button id=\"btn-reset-filters\" class=\"text-blue-400 hover:underline text-[11px] ml-auto\">Reset All</button>\n      </div>\n    </section>\n\n    <!-- PLAYER LISTINGS CONTAINER (GRID / TABLE / MATRIX) -->\n    <section>\n      <!-- Results counter header -->\n      <div class=\"flex items-center justify-between mb-3 px-1\">\n        <p class=\"text-xs text-slate-400\">\n          Showing <strong id=\"showing-count\" class=\"text-slate-200 font-mono\">0</strong> of <span id=\"total-available-count\" class=\"font-mono\">0</span> players\n        </p>\n        <span class=\"text-[11px] text-slate-500 font-mono\">Real-time status monitor</span>\n      </div>\n\n      <!-- Grid Cards View Container -->\n      <div id=\"container-grid\" class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4\">\n        <!-- Rendered dynamically -->\n      </div>\n\n      <!-- Data Table View Container -->\n      <div id=\"container-table\" class=\"hidden glass-card rounded-xl overflow-hidden border border-slate-800\">\n        <div class=\"overflow-x-auto\">\n          <table class=\"w-full text-left text-xs\">\n            <thead class=\"bg-slate-900/90 text-slate-400 font-medium uppercase tracking-wider border-b border-slate-800\">\n              <tr>\n                <th class=\"py-3 px-4\">Status</th>\n                <th class=\"py-3 px-4\">Player Name</th>\n                <th class=\"py-3 px-4\">Controller Model</th>\n                <th class=\"py-3 px-4\">Resolution</th>\n                <th class=\"py-3 px-4\">Total Pixels</th>\n                <th class=\"py-3 px-4\">Last Seen</th>\n                <th class=\"py-3 px-4 text-right\">Actions</th>\n              </tr>\n            </thead>\n            <tbody id=\"table-body\" class=\"divide-y divide-slate-800/60 text-slate-300 font-sans\">\n              <!-- Rendered dynamically -->\n            </tbody>\n          </table>\n        </div>\n      </div>\n\n      <!-- Matrix Topology View Container -->\n      <div id=\"container-matrix\" class=\"hidden glass-card rounded-xl p-5\">\n        <p class=\"text-xs text-slate-400 mb-4\">Topology heatmap & instant player health grid:</p>\n        <div id=\"matrix-grid\" class=\"grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3\">\n          <!-- Rendered dynamically -->\n        </div>\n      </div>\n\n      <!-- Empty Filter Results Message -->\n      <div id=\"empty-state\" class=\"hidden glass-card rounded-xl p-12 text-center space-y-3\">\n        <div class=\"w-12 h-12 rounded-full bg-slate-800 text-slate-400 mx-auto flex items-center justify-center\">\n          <i data-lucide=\"search-x\" class=\"w-6 h-6\"></i>\n        </div>\n        <h3 class=\"text-base font-semibold text-white\">No players match current filter</h3>\n        <p class=\"text-xs text-slate-400 max-w-md mx-auto\">Try loosening your search terms, clearing resolution or model filters, or resetting status criteria.</p>\n        <button id=\"btn-empty-reset\" class=\"px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-medium transition\">\n          Reset Filters\n        </button>\n      </div>\n\n    </section>\n\n  </main>\n\n  <!-- FOOTER -->\n  <footer class=\"border-t border-slate-800/80 bg-[#090d16] py-6 px-4 lg:px-8 mt-12 text-xs text-slate-500\">\n    <div class=\"max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4\">\n      <div class=\"flex items-center space-x-2\">\n        <span class=\"w-2 h-2 rounded-full bg-emerald-500\"></span>\n        <span class=\"text-slate-400 font-medium\">NovaCloud Fleet Operational Monitor</span>\n        <span>•</span>\n        <span>Version 2.4.0</span>\n      </div>\n      <p class=\"text-slate-500\">\n        Designed for LED sign controllers, Taurus T-Series, & VMS displays.\n      </p>\n    </div>\n  </footer>\n\n  <!-- TOAST NOTIFICATION CONTAINER -->\n  <div id=\"toast-container\" class=\"fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none\"></div>\n\n  <!-- MAIN VANILLA JAVASCRIPT LOGIC -->\n  <script>\n    // DASHBOARD APPLICATION STATE (Live Production Feed from /api/players)\n    let dashboardData = {\n      timestamp: \"\",\n      source: \"NovaCloud\",\n      count: 0,\n      players: []\n    };\n\n    let filterStatus = 'ALL';\n    let filterModel = 'ALL';\n    let filterResolution = 'ALL';\n    let searchQuery = '';\n    let sortKey = 'status';\n    let activeViewMode = 'grid'; // 'grid' | 'table' | 'matrix'\n    let analyticsVisible = true;\n\n    // Chart.js Instances\n    let chartStatusInstance = null;\n    let chartModelsInstance = null;\n    let chartResolutionsInstance = null;\n\n    // =========================================================================\n    // SCHEMA ENGINE & AGNOSTIC ITEM EXTRACTORS\n    // =========================================================================\n\n    // Detects and returns the primary array of items from any JSON root payload\n    function getItems(payload) {\n      if (!payload) return [];\n      if (Array.isArray(payload)) return payload;\n      if (Array.isArray(payload.players)) return payload.players;\n      if (Array.isArray(payload.items)) return payload.items;\n      if (Array.isArray(payload.devices)) return payload.devices;\n      if (Array.isArray(payload.data)) return payload.data;\n      if (Array.isArray(payload.nodes)) return payload.nodes;\n      if (Array.isArray(payload.servers)) return payload.servers;\n      if (Array.isArray(payload.displays)) return payload.displays;\n      if (Array.isArray(payload.list)) return payload.list;\n      if (Array.isArray(payload.records)) return payload.records;\n\n      // Search object values for first array\n      for (const val of Object.values(payload)) {\n        if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object') {\n          return val;\n        }\n      }\n      return [];\n    }\n\n    // Dynamic field resolution with fallbacks for standard monitoring keys\n    function getItemName(item) {\n      if (!item) return 'Unknown Unit';\n      return item.name || item.id || item.title || item.label || item.hostname || item.player_id || item.deviceName || 'Unnamed Device';\n    }\n\n    function getItemStatus(item) {\n      if (!item) return 'Unknown';\n      const val = item.onlineStatus || item.status || item.state || item.health || item.condition;\n      if (val !== undefined && val !== null) return String(val);\n      return 'Unknown';\n    }\n\n    function isItemOnline(item) {\n      const statusStr = getItemStatus(item).toLowerCase().trim();\n      return ['online', 'active', 'ok', 'healthy', 'connected', '1', 'true', 'up'].includes(statusStr);\n    }\n\n    function getItemModel(item) {\n      if (!item) return 'Generic';\n      return item.model || item.type || item.deviceType || item.hardware || item.category || item.series || 'T2-4G';\n    }\n\n    function getItemResolution(item) {\n      if (!item) return '160 x 96';\n      if (typeof item.resolution === 'string') return item.resolution;\n      if (typeof item.res === 'string') return item.res;\n      if (typeof item.screen_size === 'string') return item.screen_size;\n      if (item.width && item.height) return `${item.width} x ${item.height}`;\n      if (item.w && item.h) return `${item.w} x ${item.h}`;\n      return '160 x 96';\n    }\n\n    function getItemLastSeen(item) {\n      if (!item) return '';\n      return item.lastSeen || item.last_seen || item.timestamp || item.updatedAt || item.created_at || item.time || '';\n    }\n\n    // Ultra-resilient geometry and resolution parser\n    function parseRes(resStrStr) {\n      if (!resStrStr) return { w: 100, h: 100, pixels: 10000, ratioStr: '1:1', ratioVal: 1 };\n\n      let w = 100, h = 100;\n      if (typeof resStrStr === 'object' && resStrStr !== null) {\n        w = resStrStr.w || resStrStr.width || 100;\n        h = resStrStr.h || resStrStr.height || 100;\n      } else if (Array.isArray(resStrStr)) {\n        w = resStrStr[0] || 100;\n        h = resStrStr[1] || 100;\n      } else {\n        const str = String(resStrStr);\n        const match = str.match(/(\\d+)\\s*[\\*xX×,:]\\s*(\\d+)/);\n        if (match) {\n          w = parseInt(match[1], 10) || 100;\n          h = parseInt(match[2], 10) || 100;\n        }\n      }\n\n      const pixels = w * h;\n      const ratioVal = h !== 0 ? w / h : 1;\n      const ratioStr = `${ratioVal.toFixed(2)}:1`;\n      return { w, h, pixels, ratioStr, ratioVal };\n    }\n\n    function timeAgo(dateString) {\n      if (!dateString) return 'Unknown';\n      const now = new Date();\n      const past = new Date(String(dateString).replace(' ', 'T') + (String(dateString).includes('Z') ? '' : 'Z'));\n      const diffMs = now - past;\n      if (isNaN(diffMs) || diffMs < 0) return String(dateString);\n\n      const mins = Math.floor(diffMs / (1000 * 60));\n      if (mins < 60) return mins <= 1 ? 'Just now' : `${mins} mins ago`;\n      const hours = Math.floor(mins / 60);\n      if (hours < 24) return `${hours} hr${hours > 1 ? 's' : ''} ago`;\n      const days = Math.floor(hours / 24);\n      if (days < 30) return `${days} day${days > 1 ? 's' : ''} ago`;\n      const months = Math.floor(days / 30);\n      if (months < 12) return `${months} mo${months > 1 ? 's' : ''} ago`;\n      const yrs = Math.floor(months / 12);\n      return `${yrs} yr${yrs > 1 ? 's' : ''} ago`;\n    }\n\n    function showToast(msg, type = 'info') {\n      const container = document.getElementById('toast-container');\n      if (!container) return;\n      const toast = document.createElement('div');\n      toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl text-xs font-medium shadow-xl border flex items-center gap-2 transform transition-all duration-300 translate-y-2 opacity-0 bg-slate-900 ${\n        type === 'success' ? 'border-emerald-500/40 text-emerald-300' :\n        type === 'warning' ? 'border-amber-500/40 text-amber-300' :\n        type === 'error' ? 'border-rose-500/40 text-rose-300' :\n        'border-blue-500/40 text-blue-300'\n      }`;\n\n      const iconName = type === 'success' ? 'check-circle' : type === 'warning' ? 'alert-triangle' : type === 'error' ? 'alert-circle' : 'info';\n      toast.innerHTML = `<i data-lucide=\"${iconName}\" class=\"w-4 h-4\"></i><span>${msg}</span>`;\n      container.appendChild(toast);\n      lucide.createIcons();\n\n      requestAnimationFrame(() => {\n        toast.classList.remove('translate-y-2', 'opacity-0');\n      });\n\n      setTimeout(() => {\n        toast.classList.add('opacity-0', 'translate-y-2');\n        setTimeout(() => toast.remove(), 300);\n      }, 3500);\n    }\n\n    // =========================================================================\n    // API DATA FETCHING & SYNCHRONIZATION\n    // =========================================================================\n\n    async function fetchPlayersData(isManualSync = false) {\n      const syncIcon = document.getElementById('sync-icon');\n      if (syncIcon) syncIcon.classList.add('animate-spin');\n\n      try {\n        const response = await fetch('/api/players');\n        if (!response.ok) {\n          throw new Error(`Server returned HTTP ${response.status}`);\n        }\n        const data = await response.json();\n        dashboardData = data;\n\n        // Set Header info\n        if (dashboardData.source) {\n          document.getElementById('header-source').innerText = dashboardData.source;\n        }\n        if (dashboardData.timestamp) {\n          const ts = new Date(dashboardData.timestamp);\n          document.getElementById('header-timestamp').innerText = !isNaN(ts.getTime()) ? ts.toLocaleString() : dashboardData.timestamp;\n        } else {\n          document.getElementById('header-timestamp').innerText = new Date().toLocaleString();\n        }\n\n        const items = getItems(dashboardData);\n        const sampleItem = items[0] || {};\n        const keyCount = Object.keys(sampleItem).length;\n        document.getElementById('header-schema-badge').innerText = `Schema: ${items.length} Units (${keyCount} Fields)`;\n\n        populateDropdownOptions();\n        updateStatsAndKPIs();\n        renderAnalyticsCharts();\n        applyFiltersAndRender();\n        lucide.createIcons();\n\n        if (isManualSync) {\n          showToast('Player telemetry synced successfully', 'success');\n        }\n      } catch (err) {\n        console.error('API Fetch Error:', err);\n        showToast('Unable to connect to Node-RED', 'error');\n      } finally {\n        if (syncIcon) syncIcon.classList.remove('animate-spin');\n      }\n    }\n\n    function populateDropdownOptions() {\n      const items = getItems(dashboardData);\n      const modelSelect = document.getElementById('select-model');\n      const resSelect = document.getElementById('select-resolution');\n\n      const currentModelVal = modelSelect.value;\n      const currentResVal = resSelect.value;\n\n      const models = [...new Set(items.map(p => getItemModel(p)))].sort();\n      const resolutions = [...new Set(items.map(p => getItemResolution(p)))].sort();\n\n      modelSelect.innerHTML = `<option value=\"ALL\">All Models (${models.length})</option>` +\n        models.map(m => `<option value=\"${m}\">${m}</option>`).join('');\n\n      resSelect.innerHTML = `<option value=\"ALL\">All Resolutions (${resolutions.length})</option>` +\n        resolutions.map(r => `<option value=\"${r}\">${r}</option>`).join('');\n\n      if (models.includes(currentModelVal)) modelSelect.value = currentModelVal;\n      if (resolutions.includes(currentResVal)) resSelect.value = currentResVal;\n    }\n\n    function updateStatsAndKPIs() {\n      const players = getItems(dashboardData);\n      const total = players.length;\n      const online = players.filter(p => isItemOnline(p)).length;\n      const offline = total - online;\n\n      const onlinePct = total > 0 ? ((online / total) * 100).toFixed(1) : 0;\n      const offlinePct = total > 0 ? ((offline / total) * 100).toFixed(1) : 0;\n\n      // Calculate total pixel count\n      let totalPixels = 0;\n      const modelCounts = {};\n      const resCounts = {};\n\n      players.forEach(p => {\n        const res = getItemResolution(p);\n        const parsed = parseRes(res);\n        const model = getItemModel(p);\n        totalPixels += parsed.pixels;\n        modelCounts[model] = (modelCounts[model] || 0) + 1;\n        resCounts[res] = (resCounts[res] || 0) + 1;\n      });\n\n      // Find top model\n      let topModel = 'N/A';\n      let topModelCount = 0;\n      Object.entries(modelCounts).forEach(([m, count]) => {\n        if (count > topModelCount) {\n          topModel = m;\n          topModelCount = count;\n        }\n      });\n\n      // Find top resolution\n      let topRes = 'N/A';\n      let topResCount = 0;\n      Object.entries(resCounts).forEach(([r, count]) => {\n        if (count > topResCount) {\n          topRes = r;\n          topResCount = count;\n        }\n      });\n\n      // Update KPI Elements\n      document.getElementById('kpi-total-count').innerText = total;\n      document.getElementById('kpi-total-pixels').innerText = `~${totalPixels.toLocaleString()} total active pixels`;\n\n      document.getElementById('kpi-online-count').innerText = online;\n      document.getElementById('kpi-online-pct').innerText = `${onlinePct}%`;\n\n      document.getElementById('kpi-offline-count').innerText = offline;\n      document.getElementById('kpi-offline-pct').innerText = `${offlinePct}%`;\n\n      document.getElementById('kpi-top-model').innerText = topModel;\n      document.getElementById('kpi-top-model-count').innerText = `${topModelCount} players`;\n      document.getElementById('kpi-res-summary').innerText = `Top profile: ${topRes} (${topResCount})`;\n\n      // Update filter tab badge counts\n      document.getElementById('badge-count-all').innerText = total;\n      document.getElementById('badge-count-online').innerText = online;\n      document.getElementById('badge-count-offline').innerText = offline;\n    }\n\n    // ANALYTICS CHARTS RENDERING\n    function renderAnalyticsCharts() {\n      const players = getItems(dashboardData);\n\n      // 1. Status Doughnut Chart\n      const onlineCount = players.filter(p => isItemOnline(p)).length;\n      const offlineCount = players.length - onlineCount;\n\n      const canvasStatus = document.getElementById('chart-status');\n      if (canvasStatus) {\n        const ctxStatus = canvasStatus.getContext('2d');\n        if (chartStatusInstance) chartStatusInstance.destroy();\n\n        chartStatusInstance = new Chart(ctxStatus, {\n          type: 'doughnut',\n          data: {\n            labels: ['Online', 'Offline'],\n            datasets: [{\n              data: [onlineCount, offlineCount],\n              backgroundColor: ['#10b981', '#f43f5e'],\n              borderColor: '#111726',\n              borderWidth: 3,\n              hoverOffset: 4\n            }]\n          },\n          options: {\n            responsive: true,\n            maintainAspectRatio: false,\n            plugins: {\n              legend: {\n                position: 'bottom',\n                labels: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, boxWidth: 10, padding: 12 }\n              },\n              tooltip: {\n                backgroundColor: '#1e293b',\n                bodyFont: { family: 'Inter' }\n              }\n            },\n            cutout: '70%'\n          }\n        });\n      }\n\n      // 2. Hardware Models Bar Chart\n      const modelMap = {};\n      players.forEach(p => {\n        const m = getItemModel(p);\n        modelMap[m] = (modelMap[m] || 0) + 1;\n      });\n\n      const canvasModels = document.getElementById('chart-models');\n      if (canvasModels) {\n        const ctxModels = canvasModels.getContext('2d');\n        if (chartModelsInstance) chartModelsInstance.destroy();\n\n        chartModelsInstance = new Chart(ctxModels, {\n          type: 'bar',\n          data: {\n            labels: Object.keys(modelMap),\n            datasets: [{\n              label: 'Players',\n              data: Object.values(modelMap),\n              backgroundColor: 'rgba(168, 85, 247, 0.7)',\n              borderColor: '#a855f7',\n              borderWidth: 1,\n              borderRadius: 6\n            }]\n          },\n          options: {\n            responsive: true,\n            maintainAspectRatio: false,\n            plugins: { legend: { display: false } },\n            scales: {\n              x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { display: false } },\n              y: { ticks: { color: '#94a3b8', font: { size: 10 }, stepSize: 5 }, grid: { color: 'rgba(255,255,255,0.05)' } }\n            }\n          }\n        });\n      }\n\n      // 3. Resolutions Horizontal Bar Chart\n      const resMap = {};\n      players.forEach(p => {\n        const r = getItemResolution(p);\n        resMap[r] = (resMap[r] || 0) + 1;\n      });\n\n      const canvasRes = document.getElementById('chart-resolutions');\n      if (canvasRes) {\n        const ctxRes = canvasRes.getContext('2d');\n        if (chartResolutionsInstance) chartResolutionsInstance.destroy();\n\n        chartResolutionsInstance = new Chart(ctxRes, {\n          type: 'bar',\n          data: {\n            labels: Object.keys(resMap),\n            datasets: [{\n              label: 'Displays',\n              data: Object.values(resMap),\n              backgroundColor: 'rgba(59, 130, 246, 0.7)',\n              borderColor: '#3b82f6',\n              borderWidth: 1,\n              borderRadius: 6\n            }]\n          },\n          options: {\n            indexAxis: 'y',\n            responsive: true,\n            maintainAspectRatio: false,\n            plugins: { legend: { display: false } },\n            scales: {\n              x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },\n              y: { ticks: { color: '#94a3b8', font: { family: 'JetBrains Mono', size: 9 } }, grid: { display: false } }\n            }\n          }\n        });\n      }\n    }\n\n    // FILTER & SORT IMPLEMENTATION\n    function getFilteredAndSortedPlayers() {\n      let players = [...getItems(dashboardData)];\n\n      // Status filter\n      if (filterStatus !== 'ALL') {\n        players = players.filter(p => {\n          const online = isItemOnline(p);\n          return filterStatus === 'Online' ? online : !online;\n        });\n      }\n\n      // Model filter\n      if (filterModel !== 'ALL') {\n        players = players.filter(p => getItemModel(p) === filterModel);\n      }\n\n      // Resolution filter\n      if (filterResolution !== 'ALL') {\n        players = players.filter(p => getItemResolution(p) === filterResolution);\n      }\n\n      // Search query filter (Universal deep property match)\n      if (searchQuery.trim() !== '') {\n        const q = searchQuery.toLowerCase().trim();\n        players = players.filter(p => {\n          return Object.values(p).some(val => {\n            if (val === null || val === undefined) return false;\n            if (typeof val === 'object') return JSON.stringify(val).toLowerCase().includes(q);\n            return String(val).toLowerCase().includes(q);\n          });\n        });\n      }\n\n      // Sorting\n      players.sort((a, b) => {\n        const nameA = getItemName(a);\n        const nameB = getItemName(b);\n        const statusA = isItemOnline(a);\n        const statusB = isItemOnline(b);\n\n        if (sortKey === 'status') {\n          if (statusA === statusB) return nameA.localeCompare(nameB);\n          return statusA ? -1 : 1;\n        } else if (sortKey === 'name') {\n          return nameA.localeCompare(nameB);\n        } else if (sortKey === 'lastSeen') {\n          return new Date(getItemLastSeen(b)) - new Date(getItemLastSeen(a));\n        } else if (sortKey === 'resolution') {\n          return parseRes(getItemResolution(b)).pixels - parseRes(getItemResolution(a)).pixels;\n        }\n        return 0;\n      });\n\n      return players;\n    }\n\n    function applyFiltersAndRender() {\n      const players = getFilteredAndSortedPlayers();\n      const totalAvailable = getItems(dashboardData).length;\n\n      document.getElementById('showing-count').innerText = players.length;\n      document.getElementById('total-available-count').innerText = totalAvailable;\n\n      // Update Active Filters Bar visibility\n      const activeBar = document.getElementById('active-filters-bar');\n      const activeContainer = document.getElementById('active-filters-pills');\n      activeContainer.innerHTML = '';\n\n      let hasFilters = false;\n      if (filterStatus !== 'ALL') {\n        hasFilters = true;\n        activeContainer.innerHTML += `<span class=\"bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30\">Status: ${filterStatus}</span>`;\n      }\n      if (filterModel !== 'ALL') {\n        hasFilters = true;\n        activeContainer.innerHTML += `<span class=\"bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded border border-purple-500/30\">Model: ${filterModel}</span>`;\n      }\n      if (filterResolution !== 'ALL') {\n        hasFilters = true;\n        activeContainer.innerHTML += `<span class=\"bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 font-mono\">Res: ${filterResolution}</span>`;\n      }\n      if (searchQuery.trim() !== '') {\n        hasFilters = true;\n        activeContainer.innerHTML += `<span class=\"bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30\">Search: \"${searchQuery}\"</span>`;\n      }\n\n      if (hasFilters) {\n        activeBar.classList.remove('hidden');\n      } else {\n        activeBar.classList.add('hidden');\n      }\n\n      // Empty state handler\n      const emptyState = document.getElementById('empty-state');\n      if (players.length === 0) {\n        emptyState.classList.remove('hidden');\n        document.getElementById('container-grid').classList.add('hidden');\n        document.getElementById('container-table').classList.add('hidden');\n        document.getElementById('container-matrix').classList.add('hidden');\n        return;\n      } else {\n        emptyState.classList.add('hidden');\n      }\n\n      // Render based on active view mode\n      if (activeViewMode === 'grid') {\n        renderGridView(players);\n      } else if (activeViewMode === 'table') {\n        renderTableView(players);\n      } else if (activeViewMode === 'matrix') {\n        renderMatrixView(players);\n      }\n\n      lucide.createIcons();\n    }\n\n    // RENDER CARDS GRID\n    function renderGridView(players) {\n      const grid = document.getElementById('container-grid');\n      document.getElementById('container-table').classList.add('hidden');\n      document.getElementById('container-matrix').classList.add('hidden');\n      grid.classList.remove('hidden');\n\n      grid.innerHTML = players.map((p) => {\n        const name = getItemName(p);\n        const isOnline = isItemOnline(p);\n        const statusText = getItemStatus(p);\n        const model = getItemModel(p);\n        const res = getItemResolution(p);\n        const resInfo = parseRes(res);\n        const lastSeen = getItemLastSeen(p);\n        const relativeTime = timeAgo(lastSeen);\n\n        return `\n          <div class=\"glass-card rounded-xl p-4 flex flex-col justify-between space-y-3\">\n            \n            <!-- Card Header -->\n            <div class=\"flex items-start justify-between gap-2\">\n              <div class=\"space-y-1 overflow-hidden\">\n                <span class=\"text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60 inline-block\">\n                  ${model}\n                </span>\n                <h3 class=\"text-sm font-semibold text-white truncate font-mono\" title=\"${name}\">\n                  ${name}\n                </h3>\n              </div>\n\n              <!-- Status Badge -->\n              <span class=\"flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium shrink-0 ${\n                isOnline ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 glow-online' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'\n              }\">\n                <span class=\"w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}\"></span>\n                ${statusText}\n              </span>\n            </div>\n\n            <!-- Mini Display Info Box -->\n            <div class=\"led-matrix rounded-lg p-2 border border-slate-800 flex items-center justify-center h-20 relative overflow-hidden\">\n              <div class=\"text-center\">\n                <p class=\"text-[10px] font-mono font-bold ${isOnline ? 'text-emerald-400' : 'text-slate-600'} tracking-wider uppercase\">\n                  ${isOnline ? 'DISPLAY ACTIVE' : 'NO SIGNAL'}\n                </p>\n                <p class=\"text-[9px] font-mono text-slate-500\">${resInfo.w} × ${resInfo.h} px (${resInfo.ratioStr})</p>\n              </div>\n            </div>\n\n            <!-- Card Metadata Footer -->\n            <div class=\"flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800/80 pt-2.5\">\n              <span class=\"flex items-center gap-1 font-mono\">\n                <i data-lucide=\"clock\" class=\"w-3 h-3 text-slate-500\"></i> ${relativeTime}\n              </span>\n              <span class=\"font-mono text-[10px] text-slate-500\">\n                ${res}\n              </span>\n            </div>\n\n          </div>\n        `;\n      }).join('');\n    }\n\n    // RENDER DATA TABLE\n    function renderTableView(players) {\n      const tableContainer = document.getElementById('container-table');\n      document.getElementById('container-grid').classList.add('hidden');\n      document.getElementById('container-matrix').classList.add('hidden');\n      tableContainer.classList.remove('hidden');\n\n      const tbody = document.getElementById('table-body');\n      tbody.innerHTML = players.map((p) => {\n        const name = getItemName(p);\n        const isOnline = isItemOnline(p);\n        const statusText = getItemStatus(p);\n        const model = getItemModel(p);\n        const res = getItemResolution(p);\n        const resInfo = parseRes(res);\n        const lastSeen = getItemLastSeen(p);\n        const relativeTime = timeAgo(lastSeen);\n\n        return `\n          <tr class=\"hover:bg-slate-800/50 transition\">\n            <td class=\"py-3 px-4\">\n              <span class=\"inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium ${\n                isOnline ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'\n              }\">\n                <span class=\"w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-rose-500'}\"></span>\n                ${statusText}\n              </span>\n            </td>\n            <td class=\"py-3 px-4 font-mono font-medium text-white\">${name}</td>\n            <td class=\"py-3 px-4\"><span class=\"px-2 py-0.5 rounded bg-slate-800 font-mono text-slate-300 border border-slate-700/60\">${model}</span></td>\n            <td class=\"py-3 px-4 font-mono text-blue-400\">${res}</td>\n            <td class=\"py-3 px-4 font-mono text-slate-400\">${resInfo.pixels.toLocaleString()} px</td>\n            <td class=\"py-3 px-4 font-mono text-slate-400\" title=\"${lastSeen}\">${relativeTime}</td>\n            <td class=\"py-3 px-4 text-right\">\n              <span class=\"text-[10px] font-mono text-slate-500 uppercase\">${isOnline ? 'Active' : 'Offline'}</span>\n            </td>\n          </tr>\n        `;\n      }).join('');\n    }\n\n    // RENDER TOPOLOGY MATRIX\n    function renderMatrixView(players) {\n      const matrixContainer = document.getElementById('container-matrix');\n      document.getElementById('container-grid').classList.add('hidden');\n      document.getElementById('container-table').classList.add('hidden');\n      matrixContainer.classList.remove('hidden');\n\n      const grid = document.getElementById('matrix-grid');\n      grid.innerHTML = players.map((p) => {\n        const name = getItemName(p);\n        const isOnline = isItemOnline(p);\n        const model = getItemModel(p);\n        const res = getItemResolution(p);\n\n        return `\n          <div class=\"p-3 rounded-xl border transition flex flex-col justify-between space-y-2 ${\n            isOnline ? 'bg-emerald-950/30 border-emerald-500/30' : 'bg-rose-950/30 border-rose-500/30'\n          }\">\n            <div class=\"flex items-center justify-between\">\n              <span class=\"text-[10px] font-mono text-slate-400\">${model}</span>\n              <span class=\"w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 glow-online' : 'bg-rose-500'}\"></span>\n            </div>\n            <h4 class=\"text-xs font-mono font-bold text-white truncate\" title=\"${name}\">${name}</h4>\n            <span class=\"text-[9px] font-mono text-slate-400\">${res}</span>\n          </div>\n        `;\n      }).join('');\n    }\n\n    // EVENT LISTENERS & BINDINGS\n    function setupEventListeners() {\n      // Search input\n      const searchInput = document.getElementById('search-input');\n      const clearSearchBtn = document.getElementById('clear-search-btn');\n\n      searchInput.addEventListener('input', (e) => {\n        searchQuery = e.target.value;\n        if (searchQuery.trim() !== '') {\n          clearSearchBtn.classList.remove('hidden');\n        } else {\n          clearSearchBtn.classList.add('hidden');\n        }\n        applyFiltersAndRender();\n      });\n\n      clearSearchBtn.addEventListener('click', () => {\n        searchInput.value = '';\n        searchQuery = '';\n        clearSearchBtn.classList.add('hidden');\n        applyFiltersAndRender();\n      });\n\n      // Status filters\n      document.getElementById('filter-status-all').addEventListener('click', function() {\n        setFilterStatus('ALL', this);\n      });\n      document.getElementById('filter-status-online').addEventListener('click', function() {\n        setFilterStatus('Online', this);\n      });\n      document.getElementById('filter-status-offline').addEventListener('click', function() {\n        setFilterStatus('Offline', this);\n      });\n\n      function setFilterStatus(status, btnElement) {\n        filterStatus = status;\n        document.querySelectorAll('.filter-tab').forEach(b => {\n          b.className = 'filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-slate-400 hover:text-slate-200 flex items-center gap-1.5';\n        });\n        btnElement.className = 'filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5';\n        applyFiltersAndRender();\n      }\n\n      // Dropdown filters\n      document.getElementById('select-model').addEventListener('change', (e) => {\n        filterModel = e.target.value;\n        applyFiltersAndRender();\n      });\n\n      document.getElementById('select-resolution').addEventListener('change', (e) => {\n        filterResolution = e.target.value;\n        applyFiltersAndRender();\n      });\n\n      document.getElementById('select-sort').addEventListener('change', (e) => {\n        sortKey = e.target.value;\n        applyFiltersAndRender();\n      });\n\n      // View modes\n      document.getElementById('view-mode-grid').addEventListener('click', () => setViewMode('grid'));\n      document.getElementById('view-mode-table').addEventListener('click', () => setViewMode('table'));\n      document.getElementById('view-mode-matrix').addEventListener('click', () => setViewMode('matrix'));\n\n      function setViewMode(mode) {\n        activeViewMode = mode;\n        ['grid', 'table', 'matrix'].forEach(m => {\n          const btn = document.getElementById(`view-mode-${m}`);\n          if (m === mode) {\n            btn.className = 'p-1.5 rounded text-blue-400 bg-slate-800 transition';\n          } else {\n            btn.className = 'p-1.5 rounded text-slate-400 hover:text-white transition';\n          }\n        });\n        applyFiltersAndRender();\n      }\n\n      // Reset filters button\n      document.getElementById('btn-reset-filters').addEventListener('click', resetAllFilters);\n      document.getElementById('btn-empty-reset').addEventListener('click', resetAllFilters);\n\n      function resetAllFilters() {\n        filterStatus = 'ALL';\n        filterModel = 'ALL';\n        filterResolution = 'ALL';\n        searchQuery = '';\n\n        document.getElementById('search-input').value = '';\n        document.getElementById('clear-search-btn').classList.add('hidden');\n        document.getElementById('select-model').value = 'ALL';\n        document.getElementById('select-resolution').value = 'ALL';\n        document.getElementById('select-sort').value = 'status';\n\n        document.querySelectorAll('.filter-tab').forEach(b => {\n          b.className = 'filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-slate-400 hover:text-slate-200 flex items-center gap-1.5';\n        });\n        document.getElementById('filter-status-all').className = 'filter-tab px-3 py-1.5 text-xs font-medium rounded-md transition text-white bg-blue-600 shadow-sm flex items-center gap-1.5';\n\n        applyFiltersAndRender();\n        showToast('All filters cleared', 'info');\n      }\n\n      // Toggle Analytics\n      document.getElementById('btn-toggle-analytics').addEventListener('click', () => {\n        const analyticsSection = document.getElementById('analytics-section');\n        analyticsVisible = !analyticsVisible;\n        if (analyticsVisible) {\n          analyticsSection.classList.remove('hidden');\n          document.getElementById('analytics-btn-text').innerText = 'Analytics';\n        } else {\n          analyticsSection.classList.add('hidden');\n          document.getElementById('analytics-btn-text').innerText = 'Show Analytics';\n        }\n      });\n\n      // Sync Button -> Fetch API again\n      document.getElementById('btn-sync').addEventListener('click', () => {\n        fetchPlayersData(true);\n      });\n\n      // CSV Export\n      document.getElementById('btn-export-csv').addEventListener('click', () => {\n        const players = getFilteredAndSortedPlayers();\n        if (players.length === 0) {\n          showToast('No records to export', 'warning');\n          return;\n        }\n\n        const allKeys = [...new Set(players.flatMap(item => Object.keys(item)))];\n        let csv = allKeys.map(k => `\"${k}\"`).join(',') + '\\n';\n\n        players.forEach(p => {\n          const row = allKeys.map(k => {\n            const val = p[k];\n            if (val === null || val === undefined) return '\"\"';\n            if (typeof val === 'object') return `\"${JSON.stringify(val).replace(/\"/g, '\"\"')}\"`;\n            return `\"${String(val).replace(/\"/g, '\"\"')}\"`;\n          });\n          csv += row.join(',') + '\\n';\n        });\n\n        const blob = new Blob([csv], { type: 'text/csv' });\n        const url = URL.createObjectURL(blob);\n        const a = document.createElement('a');\n        a.href = url;\n        a.download = `NovaCloud_Export_${new Date().toISOString().substring(0,10)}.csv`;\n        a.click();\n        showToast('CSV spreadsheet downloaded', 'success');\n      });\n\n      // Export JSON\n      document.getElementById('btn-export-json').addEventListener('click', () => {\n        const dataStr = JSON.stringify(dashboardData, null, 2);\n        const blob = new Blob([dataStr], { type: 'application/json' });\n        const url = URL.createObjectURL(blob);\n        const a = document.createElement('a');\n        a.href = url;\n        a.download = `NovaCloud_Data_${new Date().toISOString().substring(0,10)}.json`;\n        a.click();\n        showToast('JSON payload downloaded', 'success');\n      });\n    }\n\n    // BOOTSTRAP PRODUCTION DASHBOARD ON DOM LOAD\n    window.addEventListener('DOMContentLoaded', () => {\n      setupEventListeners();\n      \n      // On page load fetch /api/players then update KPIs, charts, filters\n      fetchPlayersData(false);\n\n      // Automatic refresh every 30 seconds\n      setInterval(() => {\n        fetchPlayersData(false);\n      }, 30000);\n    });\n  </script>\n</body>\n</html>\n",
+        "output": "str",
+        "x": 480,
+        "y": 860,
+        "wires": [
+            [
+                "f948a029bd3123ba"
+            ]
+        ]
+    },
+    {
+        "id": "eba177c1b00bb8ee",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "fa351bdf91ef123d",
+        "type": "http in",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "url": "/api/players",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 260,
+        "y": 920,
+        "wires": [
+            [
+                "4ebc099a18df15f1"
+            ]
+        ]
+    },
+    {
+        "id": "f948a029bd3123ba",
+        "type": "http response",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "f6207ba95ae832d5",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "json from mqtt",
+        "func": "// Accept MQTT payload as JSON or string\nlet data = msg.payload;\n\n// Convert string to object if needed\nif (typeof data === \"string\") {\n    try {\n        data = JSON.parse(data);\n    } catch (err) {\n        node.error(\"Invalid JSON received from MQTT\");\n        return null;\n    }\n}\n\n// Basic validation\nif (!data || !Array.isArray(data.players)) {\n    node.error(\"Invalid payload: players array missing\");\n    return null;\n}\n\n// Store latest payload\nflow.set(\"latestPlayerData\", data);\n\n// Optional statistics\nflow.set(\"playerCount\", data.players.length);\nflow.set(\n    \"onlineCount\",\n    data.players.filter(p => p.onlineStatus === \"Online\").length\n);\n\nflow.set(\n    \"offlineCount\",\n    data.players.filter(p => p.onlineStatus === \"Offline\").length\n);\n\nnode.status({\n    fill: \"green\",\n    shape: \"dot\",\n    text: `${data.players.length} players updated`\n});\n\n// Forward the message (optional)\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 760,
+        "wires": [
+            [
+                "16a50d73ab3a9f97"
+            ]
+        ]
+    },
+    {
+        "id": "359fb0cce49785ab",
+        "type": "debug",
+        "z": "b995c9cbd3aa994d",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "16a50d73ab3a9f97",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "global",
+        "func": "// Store the latest payload globally\nglobal.set(\"playerData\", msg.payload);\n\n// Save update timestamp\nglobal.set(\"playerLastUpdate\", new Date().toISOString());\n\n// Show status\nnode.status({\n    fill: \"green\",\n    shape: \"dot\",\n    text: `${msg.payload.players.length} players`\n});\n\n// Continue to debug\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 760,
+        "wires": [
+            [
+                "359fb0cce49785ab"
+            ]
+        ]
+    },
+    {
+        "id": "4ebc099a18df15f1",
+        "type": "function",
+        "z": "b995c9cbd3aa994d",
+        "name": "Read Global Player Data",
+        "func": "// Read latest MQTT data\nlet data = global.get(\"playerData\");\n\n// If no MQTT data received yet\nif (!data) {\n\n    data = {\n        source: \"MQTT\",\n        timestamp: new Date().toISOString(),\n        count: 0,\n        players: []\n    };\n\n}\n\n// Return JSON\nmsg.payload = data;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 920,
+        "wires": [
+            [
+                "f948a029bd3123ba"
+            ]
+        ]
+    },
+    {
+        "id": "5b2b8636680c0b99",
+        "type": "http in",
+        "z": "b995c9cbd3aa994d",
+        "name": "",
+        "url": "/data",
+        "method": "get",
+        "upload": false,
+        "skipBodyParsing": false,
+        "swaggerDoc": "",
+        "x": 280,
+        "y": 860,
+        "wires": [
+            [
+                "22188d6fff2f7fa9"
+            ]
+        ]
+    }
+]
